@@ -5,7 +5,7 @@ Users can add members, view all members, and see detailed profiles including upl
 
 ---
 
-## 🚀 Tech Stack
+## Tech Stack
 
 - **Frontend:** React.js, React Router, Axios
 - **Backend:** Node.js, Express.js
@@ -14,7 +14,7 @@ Users can add members, view all members, and see detailed profiles including upl
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 three-js/
@@ -61,7 +61,7 @@ npm start
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
 | Method | Endpoint         | Description                          |
 | ------ | ---------------- | ------------------------------------ |
@@ -71,7 +71,7 @@ npm start
 
 ---
 
-## ▶️ How to Run the Application
+## How to Run the Application
 
 1. Start MongoDB locally
 2. Run backend:
@@ -96,7 +96,7 @@ npm start
 
 ---
 
-## ✨ Features
+## Features
 
 - Add new team members with image upload
 - View all members in a clean card layout
@@ -105,7 +105,7 @@ npm start
 
 ---
 
-## 📌 Notes
+## Notes
 
 - Uploaded images are stored in the `/uploads` folder
 - Backend runs on **port 5000**
