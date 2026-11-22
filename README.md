@@ -4,7 +4,7 @@ A full-stack team-member management application with a React frontend and an Exp
 
 ## Stack
 
-- Frontend: React, React Router, Axios
+- Frontend: React
 - Backend: Node.js, Express, Mongoose, Multer
 - Database: MongoDB
 
@@ -49,13 +49,37 @@ Do not commit real credentials or production connection strings.
 
 ## API routes
 
-- `GET /` — API health message
-- `GET /api/members` — list members
-- `GET /api/members/:id` — retrieve one member
-- `POST /api/members` — create a member; accepts multipart form data and an optional image
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/` | API status message |
+| GET | `/api/members` | List members, newest first |
+| GET | `/api/members/:id` | Retrieve one member |
+| POST | `/api/members` | Create a member using multipart form data |
 
-Member image uploads are limited to 5 MB and common raster image MIME types.
+### Create a member
+
+Send a `multipart/form-data` request to `POST /api/members`. Required text fields are `name`, `roll`, `year`, and `degree`. Optional fields are `project`, `hobbies`, `certificate`, `internship`, and `aim`. An optional image must use the field name `image`.
+
+Example using curl:
+
+```bash
+curl -X POST http://localhost:5000/api/members \
+  -F "name=Sample Member" \
+  -F "roll=CS001" \
+  -F "year=Final Year" \
+  -F "degree=B.Tech CSE" \
+  -F "project=Team Management App"
+```
+
+The upload middleware accepts JPEG, PNG, WEBP, and GIF MIME types and limits each image to 5 MB. The server generates the stored filename; clients should not assume that the original filename is preserved.
+
+### Response behavior
+
+- `201` — member created successfully.
+- `400` — required fields are missing.
+- `404` — requested member ID does not exist.
+- `500` — an unexpected server or database error occurred.
 
 ## Notes
 
-The backend currently uses a MongoDB collection for member records. Run MongoDB locally or provide a hosted connection through `MONGODB_URI` before starting the API.
+The backend uses MongoDB for member records and local disk storage for uploaded images. For a production deployment, use persistent object storage for images, validate file contents rather than trusting MIME headers alone, and add authentication and authorization before exposing member data publicly.
