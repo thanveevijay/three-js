@@ -1,57 +1,33 @@
-# THREE.JS — Student Team Members Management Application
+# Team Management Web Application
 
-A full-stack web application developed to manage student team members efficiently.
-Users can add members, view all members, and see detailed profiles including uploaded images.
+A full-stack team-member management application with a React frontend and an Express/MongoDB API. Members can be created with profile details and an optional image, then listed or retrieved individually.
 
----
+## Stack
 
-## Tech Stack
+- Frontend: React, React Router, Axios
+- Backend: Node.js, Express, Mongoose, Multer
+- Database: MongoDB
 
-- **Frontend:** React.js, React Router, Axios
-- **Backend:** Node.js, Express.js
-- **Database:** MongoDB (Mongoose)
-- **File Upload:** Multer
+## Run locally
 
----
-
-## Project Structure
-
-```
-three-js/
-├── backend/
-├── frontend/
-```
-
----
-
-## ⚙️ Installation & Setup
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/thanveevijay/three-js.git
-cd three-js
-```
-
----
-
-### 2. Setup Backend
+### Backend
 
 ```bash
 cd backend
 npm install
-node server.js
 ```
 
-✔ Ensure MongoDB is running locally on:
+Create `backend/.env` from `backend/.env.example` and set the MongoDB connection string and frontend origin.
 
+```bash
+npm start
 ```
-mongodb://127.0.0.1:27017
-```
 
----
+The API defaults to `http://localhost:5000`.
 
-### 3. Setup Frontend
+### Frontend
+
+In a separate terminal:
 
 ```bash
 cd frontend
@@ -59,56 +35,27 @@ npm install
 npm start
 ```
 
----
+The React development server normally runs at `http://localhost:3000`.
 
-## API Endpoints
+## Backend configuration
 
-| Method | Endpoint         | Description                          |
-| ------ | ---------------- | ------------------------------------ |
-| POST   | /api/members     | Add a new member (with image upload) |
-| GET    | /api/members     | Retrieve all members                 |
-| GET    | /api/members/:id | Retrieve a single member by ID       |
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `PORT` | `5000` | API listening port |
+| `MONGODB_URI` | local MongoDB URL | MongoDB connection string |
+| `CLIENT_ORIGIN` | `http://localhost:3000` | Allowed browser origin for CORS |
 
----
+Do not commit real credentials or production connection strings.
 
-## How to Run the Application
+## API routes
 
-1. Start MongoDB locally
-2. Run backend:
+- `GET /` — API health message
+- `GET /api/members` — list members
+- `GET /api/members/:id` — retrieve one member
+- `POST /api/members` — create a member; accepts multipart form data and an optional image
 
-   ```bash
-   cd backend
-   node server.js
-   ```
-
-3. Run frontend:
-
-   ```bash
-   cd frontend
-   npm start
-   ```
-
-4. Open in browser:
-
-   ```
-   http://localhost:3000
-   ```
-
----
-
-## Features
-
-- Add new team members with image upload
-- View all members in a clean card layout
-- View individual member details
-- Simple and responsive UI
-
----
+Member image uploads are limited to 5 MB and common raster image MIME types.
 
 ## Notes
 
-- Uploaded images are stored in the `/uploads` folder
-- Backend runs on **port 5000**
-- Frontend runs on **port 3000**
-
----
+The backend currently uses a MongoDB collection for member records. Run MongoDB locally or provide a hosted connection through `MONGODB_URI` before starting the API.
