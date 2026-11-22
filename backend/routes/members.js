@@ -8,7 +8,6 @@ const uploadsDir = path.join(__dirname, '..', 'uploads');
 fs.mkdirSync(uploadsDir, { recursive: true });
 const Member = require('../models/Member');
 
-// Multer config
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadsDir),
   filename: (req, file, cb) => {
@@ -29,42 +28,56 @@ const upload = multer({
   },
 });
 
+function sendServerError(res) {
+  return res.status(500).json({ error: 'An unexpected server error occurred.' });
+}
+
 // POST /api/members - Add new member
 router.post('/', upload.single('image'), async (req, res) => {
+  let uploadedPath = req.file ? path.join(uploadsDir, req.file.filename) : null;
   try {
     const { name, roll, year, degree, project, hobbies, certificate, internship, aim } = req.body;
-    if (!name || !roll || !year || !degree) {
+    if (![name, roll, year, degree].every(value => typeof value === 'string' && value.trim())) {
+      if (uploadedPath) fs.unlink(uploadedPath, () => {});
       return res.status(400).json({ error: 'Name, roll, year, and degree are required.' });
     }
     const member = new Member({
-      name, roll, year, degree, project, hobbies, certificate, internship, aim,
+      name: name.trim(),
+      roll: roll.trim(),
+      year: year.trim(),
+      degree: degree.trim(),
+      project, hobbies, certificate, internship, aim,
       image: req.file ? req.file.filename : null,
     });
     await member.save();
-    res.status(201).json(member);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(201).json(member);
+  } catch (_err) {
+    if (uploadedPath) fs.unlink(uploadedPath, () => {});
+    return sendServerError(res);
   }
 });
 
 // GET /api/members - Get all members
-router.get('/', async (req, res) => {
+router.get('/', async (_req, res) => {
   try {
     const members = await Member.find().sort({ createdAt: -1 });
-    res.json(members);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.json(members);
+  } catch (_err) {
+    return sendServerError(res);
   }
 });
 
 // GET /api/members/:id - Get single member
 router.get('/:id', async (req, res) => {
   try {
+    if (!/^[a-f\d]{24}$/i.test(req.params.id)) {
+      return res.status(400).json({ error: 'Invalid member id.' });
+    }
     const member = await Member.findById(req.params.id);
-    if (!member) return res.status(404).json({ error: 'Member not found' });
-    res.json(member);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    if (!member) return res.status(404).json({ error: 'Member not found.' });
+    return res.json(member);
+  } catch (_err) {
+    return sendServerError(res);
   }
 });
 
